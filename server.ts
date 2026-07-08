@@ -259,7 +259,7 @@ app.get("/api/worksheets", async (req, res) => {
       data: standardizedData
     });
   } catch (error: any) {
-    console.error("Error fetching worksheets from Apps Script:", error.message);
+    console.warn("Error fetching worksheets from Apps Script (expected fallback to local database):", error.message);
     return res.json({
       success: false,
       error: error.message || "Failed to fetch from GAS. Please ensure deployment is active and permissions are set to 'Anyone'.",

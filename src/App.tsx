@@ -54,7 +54,7 @@ export default function App() {
         }
       }
     } catch (err: any) {
-      console.error("Error fetching worksheets:", err);
+      console.warn("Error fetching worksheets:", err);
       setError(err.message || "An error occurred while loading data.");
     } finally {
       setLoading(false);
