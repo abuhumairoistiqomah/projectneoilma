@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { GraduationCap, LayoutDashboard, Database, ChevronDown, Sparkles, Settings } from "lucide-react";
+import { GraduationCap, LayoutDashboard, Database, ChevronDown, Sparkles, Settings, RefreshCw } from "lucide-react";
 
 interface HeaderProps {
   activeView: string; // "dashboard" | "grade-1" | "grade-2" | ... | "settings"
   onViewChange: (view: string) => void;
   gasConfigured: boolean;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
-export default function Header({ activeView, onViewChange, gasConfigured }: HeaderProps) {
+export default function Header({ activeView, onViewChange, gasConfigured, onRefresh, isRefreshing = false }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const grades = [1, 2, 3, 4, 5, 6];
@@ -127,6 +129,19 @@ export default function Header({ activeView, onViewChange, gasConfigured }: Head
             )}
           </div>
 
+          {/* Refresh Database Button */}
+          {onRefresh && (
+            <button
+              id="header-refresh-btn"
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              title="Refresh Database from Google Sheet"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 shadow-3xs transition-all hover:bg-slate-50 hover:text-slate-900 active:scale-95 disabled:pointer-events-none disabled:opacity-60 cursor-pointer"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 text-blue-600 ${isRefreshing ? "animate-spin" : ""}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+          )}
 
         </nav>
       </div>
