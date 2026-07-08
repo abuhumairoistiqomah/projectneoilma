@@ -1,0 +1,6 @@
+{
+  "name": "NEO ILMA",
+  "description": "Dashboard bank soal matematika SD (Grade 1-6) untuk mempermudah akses worksheet interaktif dan materi pembelajaran",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
