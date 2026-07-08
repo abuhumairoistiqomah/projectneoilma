@@ -22,7 +22,15 @@ export default function App() {
   
   // Load gasUrl from localStorage on init, default to the requested URL
   const [gasUrl, setGasUrl] = useState<string>(() => {
-    return localStorage.getItem("neo_ilma_gas_url") || "https://script.google.com/macros/s/AKfycbwBTRmtT5LGquctbs_o2VxvGclxGrcul6-OmOnsx_21LaUeYhVeGNXTsWVVL2bCt1I/exec";
+    const saved = localStorage.getItem("neo_ilma_gas_url");
+    const oldDefault1 = "https://script.google.com/macros/s/AKfycbwBTRmtT5LGquctbs_o2VxvGclxGrcul6-OmOnsx_21LaUeYhVeGNXTsWVVL2bCt1I/exec";
+    const oldDefault2 = "https://script.google.com/macros/s/AKfycbzd4NPDov5GY-0UPZTpllomC6KbMnyD23pOUQk9hV4/dev";
+    const newDefault = "https://script.google.com/macros/s/AKfycbzRozJ8E2jXBulDutaeql8J2zwDBCzFaZiY2_qy5L0lgNWAjZ4L0r0OPji7N0RZjv2T/exec";
+    if (!saved || saved === oldDefault1 || saved === oldDefault2) {
+      localStorage.setItem("neo_ilma_gas_url", newDefault);
+      return newDefault;
+    }
+    return saved;
   });
 
   const [testing, setTesting] = useState<boolean>(false);

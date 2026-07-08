@@ -192,7 +192,7 @@ app.get("/api/health", (req, res) => {
 
 // Fetch Worksheets API Proxy
 app.get("/api/worksheets", async (req, res) => {
-  const gasUrl = (req.query.url as string) || process.env.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbwBTRmtT5LGquctbs_o2VxvGclxGrcul6-OmOnsx_21LaUeYhVeGNXTsWVVL2bCt1I/exec";
+  const gasUrl = (req.query.url as string) || process.env.APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzRozJ8E2jXBulDutaeql8J2zwDBCzFaZiY2_qy5L0lgNWAjZ4L0r0OPji7N0RZjv2T/exec";
 
   if (!gasUrl) {
     return res.json({
@@ -222,6 +222,18 @@ app.get("/api/worksheets", async (req, res) => {
     try {
       data = JSON.parse(text);
     } catch (e) {
+      if (gasUrl.trim().endsWith("/dev")) {
+        throw new Error(
+          "Your Google Apps Script URL ends with '/dev'. This URL requires developer authentication and cannot be accessed by the server. " +
+          "Please deploy your script as a Web App (Deploy > New deployment), set 'Who has access' to 'Anyone', and use the URL ending in '/exec'."
+        );
+      }
+      if (text.trim().toLowerCase().startsWith("<!doctype html") || text.trim().toLowerCase().startsWith("<html")) {
+        throw new Error(
+          "Google Apps Script returned an HTML page (likely a login or permission prompt) instead of JSON data. " +
+          "Please verify that you have deployed the script as a Web App, set 'Who has access' to 'Anyone', and that you are using the '/exec' URL."
+        );
+      }
       throw new Error("Invalid JSON response from Google Apps Script web app.");
     }
 
