@@ -54,7 +54,7 @@ export default function App() {
         }
       }
     } catch (err: any) {
-      console.warn("Error fetching worksheets:", err);
+      console.error("Error fetching worksheets:", err);
       setError(err.message || "An error occurred while loading data.");
     } finally {
       setLoading(false);
@@ -134,8 +134,6 @@ export default function App() {
         activeView={activeView} 
         onViewChange={setActiveView} 
         gasConfigured={!!gasUrl} 
-        onRefresh={() => fetchWorksheets(gasUrl)}
-        isRefreshing={loading}
       />
 
       {/* Main Body */}

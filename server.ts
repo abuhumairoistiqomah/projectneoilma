@@ -205,7 +205,7 @@ app.get("/api/worksheets", async (req, res) => {
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 seconds timeout
+    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 seconds timeout
 
     const response = await fetch(gasUrl, {
       method: "GET",
@@ -259,7 +259,7 @@ app.get("/api/worksheets", async (req, res) => {
       data: standardizedData
     });
   } catch (error: any) {
-    console.warn("Error fetching worksheets from Apps Script (expected fallback to local database):", error.message);
+    console.error("Error fetching worksheets from Apps Script:", error.message);
     return res.json({
       success: false,
       error: error.message || "Failed to fetch from GAS. Please ensure deployment is active and permissions are set to 'Anyone'.",
