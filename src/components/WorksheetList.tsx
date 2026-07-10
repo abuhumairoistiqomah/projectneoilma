@@ -28,12 +28,19 @@ export default function WorksheetList({ worksheets, selectedGrade, onGradeChange
   const [selectedType, setSelectedType] = useState<string>("All");
   const [selectedChapter, setSelectedChapter] = useState<string>("All");
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedGradeFilter, setSelectedGradeFilter] = useState<string>("All");
 
   // Filter worksheets for the current view (specific grade if selectedGrade is defined)
   const gradeWorksheets = useMemo(() => {
-    if (!selectedGrade) return worksheets;
-    return worksheets.filter((w) => Number(w.grade) === Number(selectedGrade));
-  }, [worksheets, selectedGrade]);
+    if (selectedGrade) {
+      return worksheets.filter((w) => Number(w.grade) === Number(selectedGrade));
+    }
+    // Dashboard page: respect the user's selectedGradeFilter
+    if (selectedGradeFilter !== "All") {
+      return worksheets.filter((w) => Number(w.grade) === Number(selectedGradeFilter));
+    }
+    return worksheets;
+  }, [worksheets, selectedGrade, selectedGradeFilter]);
 
   // Extract all unique Chapters for the filter dropdown
   const uniqueChapters = useMemo(() => {
@@ -113,9 +120,13 @@ export default function WorksheetList({ worksheets, selectedGrade, onGradeChange
   const handleResetFilters = () => {
     setSelectedType("All");
     setSelectedChapter("All");
+    setSelectedGradeFilter("All");
   };
 
-  const activeFiltersCount = (selectedType !== "All" ? 1 : 0) + (selectedChapter !== "All" ? 1 : 0);
+  const activeFiltersCount = 
+    (selectedType !== "All" ? 1 : 0) + 
+    (selectedChapter !== "All" ? 1 : 0) +
+    (!selectedGrade && selectedGradeFilter !== "All" ? 1 : 0);
 
   // Render format badge
   const renderFormatBadge = (typeString: string) => {
@@ -237,6 +248,34 @@ export default function WorksheetList({ worksheets, selectedGrade, onGradeChange
             {showFilters ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           </button>
         </div>
+
+        {/* Class Filter - Always Visible (Non-Hide) on Dashboard */}
+        {!selectedGrade && (
+          <div className="pt-3 border-t border-slate-100 flex flex-col md:flex-row md:items-center gap-2.5 animate-in fade-in duration-200">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">
+              Grade (Cross-Grade):
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {["All", "1", "2", "3", "4", "5", "6"].map((g) => {
+                const isSelected = selectedGradeFilter === g;
+                return (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => setSelectedGradeFilter(g)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer flex items-center justify-center ${
+                      isSelected
+                        ? "bg-blue-600 border-blue-600 text-white shadow-sm shadow-blue-100"
+                        : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300"
+                    }`}
+                  >
+                    {g === "All" ? "All Grades" : `Grade ${g}`}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Collapsible Filters Row */}
         {showFilters && (
